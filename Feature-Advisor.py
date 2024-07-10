@@ -138,6 +138,13 @@ cate = [
 
 openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
 
+genre = st.sidebar.radio(
+    "질문의 유형을 선택하세요",
+    ["상품 특성 기반 추천", "프로파일 기반 추천"],
+    captions = ["상품에 대한 특성을 기반으로 추천합니다.","프로파일을 기반으로 추천합니다." ])
+
+print(genre)
+
 # load inputs
 
 path = './rag_input/category'
@@ -188,9 +195,9 @@ qa = RetrievalQA.from_chain_type(llm = openai,
                                  return_source_documents = True)
 
 
-st.title('🦜🔗 Feature Advisor')
+st.title('Feature Advisor')
 
-query_template = '''
+query_template_product = '''
 너는 마케팅 기획자야.
 아래 조건을 반영해서 주요 소구 고객을 찾기 위한 카테고리를 추천하는 것이 목표야
 
@@ -214,15 +221,49 @@ C.이에 어떤 카테고리를 참조하여 고객을 찾아야 하는지, 왜 
 A-B-C의 순서대로 답변을 작성해줘
 '''
 
+
+query_template_profile = '''
+너는 인간의 심리와 소비에 대해 연구하는 학자야.
+특정 묘사를 기반으로 그것과 가장 어울리는 카테고리를 추천하는 것이 목표야.
+
+A.묘사의 내용은 아래와 같아
+
+{description}
+
+B. 묘사된 대한 전반적인 설명을 해줘
+ - 해당 묘사의 주된 심리적 동인은 무엇인지 설명해줘
+ - 어떤 생각에 기반하고 있고, 어떤 가치관에 가까우며, 궁극적으로 무엇을 원하는지에 대해 알려줘
+ - 해당 묘사를 간단하게 요약하고, 이 묘사에 부합하는 사람들의 특성에 대해서 설명해줘
+ - 1.요약 프로파일, 2.주요 심리적 동인, 3.주요 가치, 4. 주요 관심사의 항목으로 나눠서 작성해줘
+
+C.이에 어떤 카테고리를 참조하여 고객을 찾아야 하는지, 왜 해당 카테고리를 추천하는지 알려줘
+ - 카테고리는 {cate} 안의 카테고리 중에서 추천해줘
+ - 먼저 제공된 문서만 기반으로 해서 카테고리 5개 추천, 그리고 그 이유를 설명해줘. 항목의 제목은 '주요 카테고리 추천' 으로 해줘.
+ - 그리고 나서 제공된 문서와 네 생각을 모두 포함해서 카테고리 5개를 추천, 그리고 이유를 설명해줘. '주요 카테고리 추천'에서 추천한 항목은 또 추천하지 않아도 괜찮아. 항목의 제목은 별도로 만들지 말고, '주요 카테고리 추천'의 하위 항목으로 넣어줘
+ - 추천 카테고리는 별도의 하위항목 없이 1~10으로 추가해줘
+ 
+모든 답변은 자세히 풀어서 설명해줘
+A-B-C의 순서대로 답변을 작성해줘
+'''
+
+
 def generate_response(input_text):
     llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
-    query = query_template.format(description=input_text, cate=cate)
-
+    
+    if genre == "상품 특성 기반 추천":
+        query = query_template_product.format(description=input_text, cate=cate)
+    else:
+        query = query_template_profile.format(description=input_text, cate=cate)
+    
     answer = qa(query)
     st.markdown(answer['result'])
 
 with st.form('my_form'):
-    text = st.text_area('Enter text:', '타겟팅하고자 하는 상품의 특성을 입력 (특성, 소구점, 타겟고객 등)')
+    if genre == "상품 특성 기반 추천":
+        text = st.text_area('Enter text:', '타겟팅하고자 하는 상품의 특성을 입력 (특성, 소구점, 타겟고객 등)')
+    else:
+        text = st.text_area('Enter text:', '프로파일을 입력해주세요 (고객, 상품, 정서, 상황 등)')
+
     submitted = st.form_submit_button('Submit')
     if not openai_api_key.startswith('sk-'):
         st.warning('Please enter your OpenAI API key!', icon='⚠')
