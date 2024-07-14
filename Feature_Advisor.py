@@ -64,6 +64,6 @@ with st.form('my_form'):
     if not openai_api_key.startswith('sk-'):
         st.warning('Please enter your OpenAI API key!', icon='⚠')
     if submitted and openai_api_key.startswith('sk-'):
-        generate_response(text, "./db/faiss_index_1", genre, openai_api_key)
+        generate_response(text, "./db/faiss_index_2", genre, openai_api_key)
 
 

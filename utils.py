@@ -112,17 +112,14 @@ def generate_response(input_text, path_db, genre, openai_api_key):
     else:
         query = query_template_profile.format(description=input_text, cate=cate)
 
-    # llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
     answer = qa(query)
-    
-    print(answer['result'].split("카테고리 추천")[1])
 
     if genre == "상품 특성 기반 추천":
-        summary = answer['result'].split("\n")[2]
+        summary = answer['result'].split("\n")[2].replace("\"","")
         profiling = answer['result'].split("카테고리 추천")[0][:-10]
         recommendation = answer['result'].split("카테고리 추천")[1]
     else:
-        summary = answer['result'].split("\n")[1]
+        summary = answer['result'].split("\n")[1].replace("\"","")
         profiling = answer['result'].split("카테고리 추천")[0][:-10]
         recommendation = answer['result'].split("카테고리 추천")[1]    
 
