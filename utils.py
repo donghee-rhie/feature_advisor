@@ -148,7 +148,7 @@ with col2:
            recommendation=recommendation, 
            answer=answer['result'])
     
-    with open("pages/{}.py".format(summary), 'w') as f:
+    with open("donghee-rhie/feature_advisor/main/pages/{}.py".format(summary), 'w') as f:
         f.write(file_content)
 
 
