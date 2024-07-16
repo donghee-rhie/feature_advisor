@@ -114,6 +114,19 @@ def generate_response(input_text, path_db, genre, openai_api_key):
 
     answer = qa(query)
 
+    lst_cate_tmp = qa('''{} 중 C 항목의 소제목들만 가지고 와서 파이썬 리스트로 반환해줘. 
+                         변수명을 별도로 지정하지 말고 리스트만 반환해줘
+                         앞 뒤에 ``` 같은거 넣지 말고 그냥 파이썬 리스트만 반환해줘
+                      '''.format(answer['result']))
+    # lst_cate = eval(lst_cate['result'])
+
+    lst_cate_tmp = lst_cate_tmp['result']
+    lst_cate_tmp = lst_cate_tmp[1:-1].replace("\"","")
+    lst_cate = []
+    for e in lst_cate_tmp.split(","):
+        lst_cate.append(e)
+    
+    
     if genre == "상품 특성 기반 추천":
         summary = answer['result'].split("\n")[2].replace("\"","")
         profiling = answer['result'].split("카테고리 추천")[0][:-10]
@@ -142,9 +155,17 @@ with col1:
 with col2:
     st.header("카테고리 추천")
     st.markdown("""{recommendation}""")
+    st.multiselect(
+        "전송할 카테고리를 선택하세요",
+        {lst_cate},{lst_selected_cate}
+        )
+    if st.button("선택한 카테고리들 전송하기"):
+        st.write("전송되었습니다")
 '''.format(summary=summary, 
            input=input_text, 
            profiling=profiling, 
+           lst_cate = lst_cate,
+           lst_selected_cate = lst_cate[:3],
            recommendation=recommendation, 
            answer=answer['result'])
     
