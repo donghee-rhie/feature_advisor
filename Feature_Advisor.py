@@ -38,8 +38,8 @@ if openai_api_key != "" and 'openai_api_key' not in st.session_state:
 
 genre = st.sidebar.radio(
     "질문의 유형을 선택하세요",
-    ["상품 특성 기반 추천", "프로파일 기반 추천"],
-    captions = ["상품에 대한 특성을 기반으로 추천합니다.","프로파일을 기반으로 추천합니다." ])
+    ["상품 특성 기반 추천", "고객 프로파일 기반 추천"],
+    captions = ["상품에 대한 특성을 기반으로 추천합니다.","고객 프로파일을 기반으로 추천합니다." ])
 
 if st.sidebar.button("실행 이력 삭제하기"):
     # Specify the directory path
