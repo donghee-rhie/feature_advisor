@@ -117,6 +117,7 @@ def generate_response(input_text, path_db, genre, openai_api_key):
     lst_cate_tmp = qa('''{} 중 C 항목의 소제목들만 가지고 와서 파이썬 리스트로 반환해줘. 
                          변수명을 별도로 지정하지 말고 리스트만 반환해줘
                          앞 뒤에 ``` 같은거 넣지 말고 그냥 파이썬 리스트만 반환해줘
+                         폰트 색상은 흰색으로 해줘
                       '''.format(answer['result']))
     # lst_cate = eval(lst_cate['result'])
 
@@ -126,7 +127,7 @@ def generate_response(input_text, path_db, genre, openai_api_key):
     for e in lst_cate_tmp.split(","):
         lst_cate.append(e)
     
-    
+
     if genre == "상품 특성 기반 추천":
         summary = answer['result'].split("\n")[2].replace("\"","")
         profiling = answer['result'].split("카테고리 추천")[0][:-10]
@@ -171,6 +172,7 @@ with col2:
     
     with open("./pages/{}.py".format(summary), 'w') as f:
         f.write(file_content)
+
 
 
 
