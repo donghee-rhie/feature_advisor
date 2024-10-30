@@ -83,9 +83,11 @@ def generate_response(input_text, path_db, genre, openai_api_key):
     settings = load_settings()
 
     cate = settings['cate']
+    plan_mobile = settings['plan_mobile']
     query_template_product = settings['prompts']['product']
     query_template_profile = settings['prompts']['profile']
     query_template_product_simple = settings['prompts']['product_simple']
+    query_template_plan_mobile = settings['prompts']['plan_mobile']
 
     # Load vector Database
     db = load_db(path_db, openai_api_key)
@@ -109,8 +111,10 @@ def generate_response(input_text, path_db, genre, openai_api_key):
 
     if "상품 특성 기반 추천" in genre:
         query = query_template_product_simple.format(description=input_text, cate=cate)
-    else:
+    elif "프로파일 기반 추천" in genre:
         query = query_template_profile.format(description=input_text, cate=cate)
+    else:
+        query = query_template_plan_mobile.format(description=input_text, cate=cate, plan_mobile=plan_mobile)
 
     answer = qa(query)
 
@@ -118,10 +122,14 @@ def generate_response(input_text, path_db, genre, openai_api_key):
         summary = answer['result'].split("\n")[2].replace("\"","")
         profiling = answer['result'].split("카테고리 추천")[0][:-10]
         recommendation = answer['result'].split("카테고리 추천")[1]
-    else:
+    elif genre == '프로파일 기반 추천':
         summary = answer['result'].split("\n")[1].replace("\"","")
         profiling = answer['result'].split("카테고리 추천")[0][:-10]
-        recommendation = answer['result'].split("카테고리 추천")[1]    
+        recommendation = answer['result'].split("카테고리 추천")[1]   
+    else:
+        summary = answer['result'].split("\n")[1].replace("\"","")
+        profiling = answer['result'].split("요금제 추천")[0][:-10]
+        recommendation = answer['result'].split("요금제 추천")[1]   
 
     # make additional page
     file_content = '''
