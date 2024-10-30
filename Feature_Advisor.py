@@ -20,8 +20,11 @@ st.set_page_config(page_title="Feature Advisor", page_icon=":material/smart_toy:
 
 settings = load_settings()
 cate = settings['cate']
+plan_mobile = settings['plan_mobile']
 query_template_product_simple = settings['prompts']['product_simple']
 query_template_profile = settings['prompts']['profile']
+query_template_plan_mobile = settings['prompts']['plan_mobile']
+
 
 if "visibility" not in st.session_state:
     st.session_state.visibility = "visible"
@@ -38,8 +41,8 @@ if openai_api_key != "" and 'openai_api_key' not in st.session_state:
 
 genre = st.sidebar.radio(
     "질문의 유형을 선택하세요",
-    ["상품 특성 기반 추천", "프로파일 기반 추천"],
-    captions = ["상품에 대한 특성을 기반으로 추천합니다.","프로파일을 기반으로 추천합니다." ])
+    ["상품 특성 기반 추천", "프로파일 기반 추천", "모바일 요금제 추천"],
+    captions = ["상품에 대한 특성을 기반으로 추천합니다.","프로파일을 기반으로 추천합니다.", "모바일 요금제를 추천합니다"])
 
 
 # app
@@ -52,12 +55,19 @@ with st.form('my_form'):
                             disabled=st.session_state.disabled,
                             placeholder='타겟팅하고자 하는 상품의 특성을 입력 (특성, 소구점, 타겟고객 등)'
                             )
-    else:
+    elif "프로파일 기반 추천" in genre:
         text = st.text_area('Enter Text:', 
                             label_visibility=st.session_state.visibility,
                             disabled=st.session_state.disabled,
                             placeholder= '프로파일을 입력해주세요 (고객, 상품, 정서, 상황 등)'
+                            )    
+    else:
+        text = st.text_area('Enter Text:', 
+                            label_visibility=st.session_state.visibility,
+                            disabled=st.session_state.disabled,
+                            placeholder= '요금제를 추천받을 고객에 대해 설명해주세요'
                             )
+    
     submitted = st.form_submit_button('Submit')
 
     
