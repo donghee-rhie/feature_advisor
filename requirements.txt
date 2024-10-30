@@ -147,7 +147,6 @@ langsmith==0.1.137
 lazy_loader==0.4
 lazy-object-proxy==1.10.0
 lckr_jupyterlab_variableinspector==3.1.0
-libarchive-c==2.9
 libmambapy==1.5.8
 linkify-it-py==2.0.0
 llvmlite==0.42.0
