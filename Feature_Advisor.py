@@ -45,6 +45,18 @@ genre = st.sidebar.radio(
     captions = ["상품에 대한 특성을 기반으로 추천합니다.","프로파일을 기반으로 추천합니다.", "모바일 요금제를 추천합니다"])
 
 
+if st.sidebar.button("실행 이력 삭제하기"):
+    # Specify the directory path
+    directory = './pages/'
+
+    # List all files in the directory
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        
+        # Check if it is a file (and not a directory)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
 # app
 st.title('🤖Feature Advisor')
 
